@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+{% block title %}CollegeGym — Home{% endblock %}
+{% block content %}
+
+<!-- Hero -->
+<section class="hero">
+  <div class="hero-bg-text">GYM</div>
+  <div class="hero-content">
+    <p class="hero-tag">🏛 STATE COLLEGE OF ENGINEERING</p>
+    <h1 class="hero-title">TRAIN.<br>COMPETE.<br>WIN.</h1>
+    <p class="hero-sub">Your campus fitness hub — track events, register for competitions, and stay active all semester.</p>
+    <div class="hero-cta">
+      <a href="{{ url_for('event_list') }}" class="btn btn-primary">Browse Events →</a>
+      <a href="{{ url_for('admin') }}" class="btn btn-ghost">Admin Panel</a>
+    </div>
+  </div>
+  <div class="hero-stats">
+    <div class="stat-card">
+      <span class="stat-num">{{ total_events }}</span>
+      <span class="stat-label">Events</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-num">{{ total_registered }}</span>
+      <span class="stat-label">Registrations</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-num">6</span>
+      <span class="stat-label">Venues</span>
+    </div>
+  </div>
+</section>
+
+<!-- Upcoming Events -->
+<section class="section">
+  <div class="section-header">
+    <h2 class="section-title">UPCOMING EVENTS</h2>
+    <a href="{{ url_for('event_list') }}" class="see-all">See all →</a>
+  </div>
+  <div class="cards-grid">
+    {% for event in upcoming %}
+    <a href="{{ url_for('event_detail', event_id=event.id) }}" class="event-card" style="--accent: {{ event.image_color }}">
+      <div class="card-banner" style="background: {{ event.image_color }}">
+        <span class="card-cat">{{ event.category }}</span>
+        <span class="card-date">{{ event.date }}</span>
+      </div>
+      <div class="card-body">
+        <h3 class="card-title">{{ event.title }}</h3>
+        <p class="card-meta">📍 {{ event.venue }} &nbsp; ⏰ {{ event.time }}</p>
+        <p class="card-desc">{{ event.description[:90] }}…</p>
+        <div class="card-footer">
+          <div class="capacity-bar">
+            <div class="capacity-fill" style="width: {{ (event.registered / event.capacity * 100)|int }}%; background: {{ event.image_color }}"></div>
+          </div>
+          <span class="capacity-txt">{{ event.registered }}/{{ event.capacity }} seats</span>
+        </div>
+      </div>
+    </a>
+    {% endfor %}
+  </div>
+</section>
+
+<!-- Features -->
+<section class="features-section">
+  <div class="features-grid">
+    <div class="feature-item">
+      <span class="feature-icon">🏆</span>
+      <h4>Competitions</h4>
+      <p>Inter-department tournaments and championships across all sports.</p>
+    </div>
+    <div class="feature-item">
+      <span class="feature-icon">🧘</span>
+      <h4>Workshops</h4>
+      <p>Expert-led fitness workshops, seminars, and wellness programs.</p>
+    </div>
+    <div class="feature-item">
+      <span class="feature-icon">📋</span>
+      <h4>Easy Registration</h4>
+      <p>Register for any event in seconds using your roll number.</p>
+    </div>
+    <div class="feature-item">
+      <span class="feature-icon">📊</span>
+      <h4>Live Tracking</h4>
+      <p>Real-time seat availability and event capacity tracking.</p>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

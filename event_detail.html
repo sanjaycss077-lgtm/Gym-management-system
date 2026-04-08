@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+{% block title %}{{ event.title }} — CollegeGym{% endblock %}
+{% block content %}
+
+<div class="detail-hero" style="background: {{ event.image_color }}">
+  <div class="detail-hero-inner">
+    <a href="{{ url_for('event_list') }}" class="back-link">← Back to Events</a>
+    <span class="detail-cat">{{ event.category }}</span>
+    <h1 class="detail-title">{{ event.title }}</h1>
+    <p class="detail-organizer">Organised by {{ event.organizer }}</p>
+  </div>
+</div>
+
+<div class="detail-layout">
+  <!-- Main Info -->
+  <div class="detail-main">
+    <div class="detail-card">
+      <h2 class="detail-section-title">About This Event</h2>
+      <p class="detail-desc">{{ event.description }}</p>
+    </div>
+
+    <!-- Registration Form -->
+    {% set pct = (event.registered / event.capacity * 100)|int %}
+    <div class="detail-card reg-card">
+      <h2 class="detail-section-title">Register Now</h2>
+      {% if event.registered >= event.capacity %}
+        <div class="full-msg">🚫 This event is fully booked. No seats available.</div>
+      {% else %}
+        <div class="seats-info">
+          <div class="capacity-bar large">
+            <div class="capacity-fill" style="width: {{ pct }}%; background: {{ event.image_color }}"></div>
+          </div>
+          <p>{{ event.capacity - event.registered }} seats remaining out of {{ event.capacity }}</p>
+        </div>
+        <form action="{{ url_for('register_event', event_id=event.id) }}" method="POST" class="reg-form">
+          <div class="form-row">
+            <div class="form-group">
+              <label>Full Name *</label>
+              <input type="text" name="name" required placeholder="Your full name">
+            </div>
+            <div class="form-group">
+              <label>Roll Number *</label>
+              <input type="text" name="roll" required placeholder="e.g. 21CS001">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Department *</label>
+              <select name="dept" required>
+                <option value="">Select Department</option>
+                <option>Computer Science</option>
+                <option>Mechanical</option>
+                <option>Electrical</option>
+                <option>Civil</option>
+                <option>Electronics</option>
+                <option>Chemical</option>
+                <option>IT</option>
+                <option>MBA</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Email *</label>
+              <input type="email" name="email" required placeholder="student@college.edu">
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary btn-reg" style="background: {{ event.image_color }}">
+            Confirm Registration →
+          </button>
+        </form>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- Sidebar -->
+  <aside class="detail-sidebar">
+    <div class="detail-card info-card">
+      <h3>Event Details</h3>
+      <ul class="info-list">
+        <li><span>📅 Date</span><strong>{{ event.date }}</strong></li>
+        <li><span>⏰ Time</span><strong>{{ event.time }}</strong></li>
+        <li><span>📍 Venue</span><strong>{{ event.venue }}</strong></li>
+        <li><span>🏷 Category</span><strong>{{ event.category }}</strong></li>
+        <li><span>👤 Organizer</span><strong>{{ event.organizer }}</strong></li>
+        <li><span>🪑 Capacity</span><strong>{{ event.capacity }}</strong></li>
+        <li><span>✅ Registered</span><strong>{{ event.registered }}</strong></li>
+      </ul>
+    </div>
+    <div class="detail-card">
+      <h3>Share Event</h3>
+      <p style="font-size:0.85rem; color: var(--muted)">Copy the link below to share this event with friends.</p>
+      <input type="text" class="share-input" value="{{ request.url }}" readonly onclick="this.select(); document.execCommand('copy'); showCopied(this)">
+      <small class="copied-msg" id="copied-msg">Copied!</small>
+    </div>
+  </aside>
+</div>
+
+{% endblock %}

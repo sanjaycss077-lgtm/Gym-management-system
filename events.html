@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% block title %}Events — CollegeGym{% endblock %}
+{% block content %}
+
+<section class="page-header">
+  <h1 class="page-title">ALL EVENTS</h1>
+  <p class="page-sub">Browse, filter, and register for gym & sports events</p>
+</section>
+
+<!-- Filter Bar -->
+<div class="filter-bar">
+  <form method="GET" action="{{ url_for('event_list') }}" class="filter-form">
+    <div class="filter-cats">
+      {% for cat in categories %}
+      <button type="submit" name="category" value="{{ cat }}"
+        class="cat-btn {% if selected_cat == cat %}active{% endif %}">{{ cat }}</button>
+      {% endfor %}
+    </div>
+    <input type="hidden" name="category" value="{{ selected_cat }}">
+    <div class="search-wrap">
+      <input type="text" name="search" value="{{ search }}" placeholder="Search events…" class="search-input">
+      <button type="submit" class="search-btn">🔍</button>
+    </div>
+  </form>
+</div>
+
+<!-- Events Grid -->
+{% if events %}
+<div class="events-grid">
+  {% for event in events %}
+  <a href="{{ url_for('event_detail', event_id=event.id) }}" class="event-card" style="--accent: {{ event.image_color }}">
+    <div class="card-banner" style="background: {{ event.image_color }}">
+      <span class="card-cat">{{ event.category }}</span>
+      <span class="card-date">{{ event.date }}</span>
+    </div>
+    <div class="card-body">
+      <h3 class="card-title">{{ event.title }}</h3>
+      <p class="card-meta">📍 {{ event.venue }}</p>
+      <p class="card-meta">⏰ {{ event.time }} &nbsp;|&nbsp; 👤 {{ event.organizer }}</p>
+      <p class="card-desc">{{ event.description[:100] }}…</p>
+      <div class="card-footer">
+        <div class="capacity-bar">
+          <div class="capacity-fill" style="width: {{ (event.registered / event.capacity * 100)|int }}%; background: {{ event.image_color }}"></div>
+        </div>
+        <span class="capacity-txt">{{ event.registered }}/{{ event.capacity }}
+          {% if event.registered >= event.capacity %}<span class="badge-full">FULL</span>{% endif %}
+        </span>
+      </div>
+      <span class="card-cta">Register →</span>
+    </div>
+  </a>
+  {% endfor %}
+</div>
+{% else %}
+<div class="empty-state">
+  <p>😕 No events found. <a href="{{ url_for('event_list') }}">Clear filters</a></p>
+</div>
+{% endif %}
+
+{% endblock %}
